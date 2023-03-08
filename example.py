@@ -6,7 +6,7 @@ stream = None  # if stream is None it will open a pyaudio stream automatically
 # stream = ReadWriteStream()
 
 chunk_size = 2048
-precise_model = "/home/user/.local/share/precise-lite/hey_mycroft.tflite"
+precise_model = "ei-tutorial:-responding-to-your-voice-nn-classifier-tensorflow-lite-float32-model.lite"
 
 
 def on_activation():

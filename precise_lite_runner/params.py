@@ -8,14 +8,14 @@ class Vectorizer:
 
 
 class ListenerParams:
-    window_t = 0.1
-    hop_t = 0.05
-    buffer_t = 1.5
+    window_t = 1.0
+    hop_t = 0.02
+    buffer_t = 1.96
     sample_rate = 16000
     sample_depth = 2
     n_mfcc = 13
-    n_filt = 20
-    n_fft = 512
+    n_filt = 32
+    n_fft = 256
     use_delta = False
     vectorizer = Vectorizer.mfccs
     threshold_config = ((6, 4),)
@@ -28,7 +28,11 @@ class ListenerParams:
 
     @property
     def n_features(self):
-        return 1 + int(floor((self.buffer_samples - self.window_samples) / self.hop_samples))
+        print('buffer_samples', self.buffer_samples)
+        print('window_samples', self.window_samples)
+        print('self.hop_samples', self.hop_samples)
+        return 1 + int(floor((self.buffer_samples
+- self.window_samples) / self.hop_samples))
 
     @property
     def window_samples(self):

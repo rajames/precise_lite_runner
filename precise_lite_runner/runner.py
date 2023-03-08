@@ -24,16 +24,22 @@ class TFLiteRunner:
 
         self.input_details = self.interpreter.get_input_details()
         self.output_details = self.interpreter.get_output_details()
+        #print('input_details:',self.input_details)
+        #print('output_details:',self.output_details)
 
     def predict(self, inputs: np.ndarray):
         # Format output to match Keras's model.predict output
         count = 0
-        output_data = np.ndarray((inputs.shape[0], 1), dtype=np.float32)
+        output_data = np.ndarray(self.output_details[0]['shape'], dtype=np.float32)
+        #print('output data shape:', output_data.shape)
 
+        #print('inputS length:', len(inputs))
+        #print('inputS shape:', inputs.shape)
         # Support for multiple inputs
         for input in inputs:
             # Format as float32. Add a wrapper dimension.
-            current = np.array([input]).astype(np.float32)
+            current = np.array([input]).astype(np.float32).reshape(self.input_details[0]['shape'])
+            #print('input shape', input.shape)
 
             # Load data, run inference and extract output from tensor
             self.interpreter.set_tensor(self.input_details[0]['index'],
@@ -46,7 +52,7 @@ class TFLiteRunner:
         return output_data
 
     def run(self, inp: np.ndarray) -> float:
-        return self.predict(inp[np.newaxis])[0][0]
+        return self.predict(inp[np.newaxis])[0][0] # helloworld label is at index 0
 
 
 class Listener:
@@ -95,7 +101,10 @@ class Listener:
         if params.use_delta:
             mfccs = add_deltas(mfccs)
         raw_output = self.runner.run(mfccs)
-        return self.threshold_decoder.decode(raw_output)
+        #print('raw_output:', raw_output)
+        #return self.threshold_decoder.decode(raw_output)
+        # Skipping decoder as the EI raw_output is already in 'prob'
+        return raw_output
 
     def get_prediction(self, chunk):
         return self.update(chunk)
